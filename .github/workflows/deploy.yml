@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy
 
 on:
   push:
@@ -10,79 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # =========================
-      # 1. Debug safe variables
-      # =========================
-      - name: Debug environment (SAFE)
-        run: |
-          echo "Starting deployment..."
-          echo "VPS_USER is set"
-          echo "VPS_HOST is set"
-
-      # =========================
-      # 2. Deploy via SSH
-      # =========================
-      - name: Deploy via SSH
+      - name: Deploy
         uses: appleboy/ssh-action@v1.2.0
+
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          debug: true
 
           script: |
-            echo "=================================="
-            echo "🚀 DEPLOYMENT STARTED"
-            echo "=================================="
-
-            echo "👤 USER:"
-            whoami
-
-            echo "📍 PATH:"
-            pwd
-
-            echo "🖥 SERVER:"
-            hostname
-
-            echo "📦 NODE VERSION:"
-            node -v || echo "Node not found"
-
-            echo "=================================="
-            echo "📁 NAVIGATING TO PROJECT"
-            echo "=================================="
-
-            cd /home/dev/node_vps
-
-            echo "📊 GIT STATUS BEFORE PULL:"
-            git log -1 --oneline
-
-            echo "=================================="
-            echo "⬇️ PULLING LATEST CODE"
-            echo "=================================="
-
+            cd /home/prod/ci-cd
             git pull origin main
-
-            echo "📊 GIT STATUS AFTER PULL:"
-            git log -1 --oneline
-
-            echo "=================================="
-            echo "📦 INSTALLING DEPENDENCIES"
-            echo "=================================="
-
             npm install
-
-            echo "=================================="
-            echo "🔄 RESTARTING SERVICE"
-            echo "=================================="
-
-            sudo systemctl restart node_vps || echo "❌ SUDO FAILED"
-
-            echo "=================================="
-            echo "📡 SERVICE STATUS"
-            echo "=================================="
-
-            sudo systemctl status node_vps --no-pager
-
-            echo "=================================="
-            echo "✅ DEPLOYMENT COMPLETE"
-            echo "=================================="
+            sudo systemctl restart cicd_learning

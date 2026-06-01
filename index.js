@@ -5,6 +5,7 @@ const app = express();
 app.get("/", (req, res) => {
   res.json({
     title: "Sapphire",
+    version: "1.0.0",
     status: "success",
     message: "CI/CD learning!",
     date: new Date(),
