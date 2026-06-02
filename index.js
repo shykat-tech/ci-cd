@@ -12,6 +12,14 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    uptime: process.uptime(),
+    timestamp: new Date(),
+  });
+});
+
 app.listen(3000, () => {
   console.log("CI/CD learning server is running on port 3000");
 });
